@@ -10,7 +10,7 @@
 
 namespace sog {
 	// using value = std::variant<long long,string,double>;
-	using Value = std::string;
+	using Value = std::experimental::string_view;
 	
 	struct Source;
 	struct Message;
@@ -23,23 +23,23 @@ namespace sog {
 	};
 	
 	struct Source final {
-		const char *file;
-		const char *function;
+		std::experimental::string_view file;
+		std::experimental::string_view function;
 		uint32_t line;
-		const char *msg_template;
+		std::experimental::string_view msg_template;
 		std::unique_ptr<SinkData> sink_data;
 		size_t value_count;
-		const char *const *keys;
+		const std::experimental::string_view *keys;
 		
 		Source() {}
 		
 		inline constexpr Source(
-			const char *file,
-			const char *function,
+			std::experimental::string_view file,
+			std::experimental::string_view function,
 			uint32_t line,
 			const char *msg_template,
 			size_t value_count,
-			const char *const *keys
+			const std::experimental::string_view *keys
 		):
 			file(file),
 			function(function),

@@ -7,6 +7,6 @@ struct WithMemoryLogger {
 	
 	std::vector<sog::Message> take();
 		
-	using Pairs = std::vector<std::vector<std::pair<const char*,sog::Value>>>;
+	using Pairs = std::vector<std::vector<std::pair<std::string,sog::Value>>>;
 	Pairs take_pairs();
 };
