@@ -3,10 +3,15 @@
 
 #define BOOST_PP_VARIADICS 1
 
-#include "boost/preprocessor/seq/for_each_i.hpp"
-#include "boost/preprocessor/variadic/to_seq.hpp"
+#include <boost/preprocessor/arithmetic/mod.hpp>
+#include <boost/preprocessor/control/iif.hpp>
+#include <boost/preprocessor/punctuation/comma_if.hpp>
+#include <boost/preprocessor/seq/for_each_i.hpp>
+#include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/variadic/size.hpp>
+#include <boost/preprocessor/variadic/to_seq.hpp>
 
-#include "sog/base.h"
+#include "base.h"
 
 namespace sog {
 	namespace {
@@ -46,6 +51,14 @@ namespace sog {
 			inline _macro_extract &operator =(Value v) { return *this; }
 			inline _macro_extract &operator =(_macro_extract &&v) = default;
 		};
+		
+		template <typename T>
+		struct _valref {
+			T &source;
+			Value value;
+			
+			_valref(T &ref): source(ref), value(source) {}
+		};
 	}
 }
 
@@ -53,47 +66,31 @@ namespace sog {
 	_sog_LOG(level, msg, \
 		BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), \
 		BOOST_PP_SEQ_FOR_EACH_I(_sog_KEYS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)), \
-		BOOST_PP_SEQ_FOR_EACH_I(_sog_KEY_REFS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)), \
-		BOOST_PP_SEQ_FOR_EACH_I(_sog_VALS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)), \
-		BOOST_PP_SEQ_FOR_EACH_I(_sog_VAL_REFS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)))
+		BOOST_PP_SEQ_FOR_EACH_I(_sog_VALS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)))
 
-#define _sog_LOG(level, msg, nn, keys, key_refs, vals, val_refs) \
+#define _sog_LOG(level, msg, nn, keys, vals) \
 	do { \
-		keys \
-		static constexpr std::experimental::string_view _sog_keys[nn] { key_refs }; \
+		static constexpr std::experimental::string_view _sog_keys[] { keys }; \
 		static ::sog::Source _sog_source { \
 			__FILE__, \
 			__PRETTY_FUNCTION__, \
 			__LINE__, \
 			msg, \
-			nn, \
+			nn/2, \
 			_sog_keys \
 		}; \
-		vals \
-		::sog::Value _sog_args[nn] { val_refs }; \
-		::sog::_submit(::sog::Message(&_sog_source, _sog_args)); \
+		/* ::std::tuple<vals> _sog_args { val_refs }; */ \
+		::sog::_submit(::sog::Message(&_sog_source, { vals })); \
 	} while(false)
 
-#define _sog_KEYS(r, _, i, e) \
-	_sog_KEYS2(i, e)
+#define _sog_KEYS(r, _, i, e, ...) \
+	BOOST_PP_IIF(BOOST_PP_MOD(i, 2), /* nothing */, \
+		std::experimental::string_view( \
+			BOOST_PP_STRINGIZE(e), sizeof(BOOST_PP_STRINGIZE(e))-1)) \
+	BOOST_PP_COMMA_IF(BOOST_PP_MOD(i, 2))
 
-#define _sog_KEYS2(i, e) \
-	constexpr static auto _sog_key_##i = \
-		::sog::_StaticStr<::sog::_macro_key_len(#e)>(#e);
-
-#define _sog_KEY_REFS(r, _, i, e) \
-	::std::experimental::string_view(_sog_key_##i.str, _sog_key_##i.len),
-
-#define _sog_VALS(r, _, i, e) \
-	_sog_VALS2(e)
-
-#define _sog_VALS2(e) \
-	auto _sog_var##e;
-
-#define _sog_VAL_REFS(r, _, i, e) \
-	_sog_VAL_REFS2(e)
-
-#define _sog_VAL_REFS2(e) \
-	(::sog::_macro_extract(#e) * _sog_var##e).v,
+#define _sog_VALS(r, _, i, e, ...) \
+	BOOST_PP_IIF(BOOST_PP_MOD(i, 2), (e), /* nothing */) \
+	BOOST_PP_COMMA_IF(BOOST_PP_MOD(i, 2))
 
 #endif

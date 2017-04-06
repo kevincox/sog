@@ -1,4 +1,4 @@
-#include "test/util.h"
+#include "util.h"
 
 WithMemoryLogger::WithMemoryLogger() {
 	auto logger = std::make_unique<sog::MemoryLogger>();
@@ -6,8 +6,8 @@ WithMemoryLogger::WithMemoryLogger() {
 	sog::init("test", std::move(logger));
 }
 
-std::vector<sog::Message> WithMemoryLogger::take() {
-	std::vector<sog::Message> r;
+std::vector<sog::OwnedMessage> WithMemoryLogger::take() {
+	std::vector<sog::OwnedMessage> r;
 	std::swap(memory_logger->messages, r);
 	return r;
 }

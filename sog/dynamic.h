@@ -1,7 +1,7 @@
 #ifndef SOG___DYNAMIC_H
 #define SOG___DYNAMIC_H
 
-#include "sog/sog.h"
+#include "sog.h"
 
 namespace sog {
 	struct DynamicLog {

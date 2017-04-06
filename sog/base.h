@@ -1,12 +1,13 @@
 #ifndef SOG___BASE_H
 #define SOG___BASE_H
 
+#include <assert.h>
+#include <experimental/string_view>
 #include <initializer_list>
 #include <memory>
+#include <stdint.h>
 #include <vector>
-#include <assert.h>
 // #include <variant>
-#include <experimental/string_view>
 
 namespace sog {
 	// using value = std::variant<long long,string,double>;
@@ -54,11 +55,17 @@ namespace sog {
 	
 	struct Message {
 		const Source *source;
-		Value *values;
+		const Value *values;
 		
 		Message() {}
-		constexpr Message(const Source *source, Value *values):
+		constexpr Message(
+			const Source *source,
+			const Value *values):
 			source(source), values(values) {}
+		constexpr Message(
+			const Source *source,
+			std::initializer_list<Value> vals):
+			source(source), values(&*vals.begin()) {}
 	};
 	
 	struct Sink {
@@ -66,18 +73,6 @@ namespace sog {
 		virtual void prepare(Source *source) {};
 		virtual void log(Message msg) = 0;
 	};
-	
-	struct Watch: public Sink {
-		virtual ~Watch() {};
-		virtual void watch(const Message &msg) = 0;
-		
-		virtual void log(const Message &msg) { return watch(msg); };
-		void log(Message msg) override { return watch(msg); };
-	};
-	
-	std::unique_ptr<Watch> StdoutWatch();
-	
-	void init(std::experimental::string_view name, std::unique_ptr<Sink> sink={});
 }
 
 #endif

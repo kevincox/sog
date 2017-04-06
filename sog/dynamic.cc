@@ -1,4 +1,4 @@
-#include "sog/dynamic.h"
+#include "dynamic.h"
 
 void sog::DynamicLog::submit() {
 	source.keys = keys.data();
