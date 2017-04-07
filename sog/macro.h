@@ -64,19 +64,22 @@ namespace sog {
 
 #define LOG(level, msg, ...) \
 	_sog_LOG(level, msg, \
-		BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), \
+		BOOST_PP_VARIADIC_SIZE(__VA_ARGS__)/2, \
 		BOOST_PP_SEQ_FOR_EACH_I(_sog_KEYS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)), \
 		BOOST_PP_SEQ_FOR_EACH_I(_sog_VALS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)))
 
-#define _sog_LOG(level, msg, nn, keys, vals) \
+#define _sog_LOG(level, msg, n, keys, vals) \
 	do { \
 		static constexpr std::experimental::string_view _sog_keys[] { keys }; \
+		static_assert( \
+			n == 0 || sizeof(_sog_keys)/sizeof(_sog_keys[0]) == n, \
+			"Odd number of arguments to LOG."); \
 		static constexpr ::sog::Source _sog_source { \
 			{ __FILE__, sizeof(__FILE__) - 1 }, \
 			{ __PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 1 }, \
 			__LINE__, \
 			{ msg, sizeof(msg) - 1 }, \
-			nn/2, \
+			n, \
 			_sog_keys \
 		}; \
 		static ::sog::SinkData *_sog_sink_data = ::sog::_prepare(&_sog_source); \

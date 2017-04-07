@@ -1,5 +1,6 @@
-#include <gtest/gtest.h>
 #include "test/util.h"
+
+#include <gtest/gtest.h>
 #include "sog/sog.h"
 
 WithMemoryLogger logger;
@@ -11,7 +12,7 @@ TEST(Macro, Basic) {
 		other, secret);
 	
 	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
-		{ {"msg", "Foo"},   {"other", "top secret"} },
+		MSG("My $msg is foo", {"msg", "Foo"}, {"other", "top secret"}),
 	}));
 }
 
@@ -34,9 +35,9 @@ TEST(Macro, MultiScope) {
 		another, "");
 	
 	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
-		{ {"var", "top secret"},   {"other", "top secret bar"} },
-		{ {"var", "top secret"},   {"other", "foo"} },
-		{ {"var", "top secretive"}, {"another", ""} },
+		MSG("Var: $var", {"var", "top secret"}, {"other", "top secret bar"}),
+		MSG("If: $other", {"var", "top secret"}, {"other", "foo"}),
+		MSG("Last: $var", {"var", "top secretive"}, {"another", ""}),
 	}));
 }
 
@@ -54,8 +55,8 @@ TEST(Macro, EvalOnce) {
 	EXPECT_EQ(val, "foofoo");
 	
 	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
-		{ {"val", "foo"} },
-		{ {"val", "foofoo"} },
+		MSG("Thing: $val", {"val", "foo"}),
+		MSG("Thing: $val", {"val", "foofoo"}),
 	}));
 }
 
@@ -68,9 +69,17 @@ TEST(Macro, SavesTemp) {
 		heap, heap + " and another bit.");
 	
 	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
-		{
+		MSG("Log",
 			{"sso", "shrt"},
-			{"heap", "string that is longer then SSO strings and another bit."}
-		},
+			{"heap", "string that is longer then SSO strings and another bit."})
+	}));
+}
+
+TEST(Macro, Loop) {
+	for (int i = 0; i < 3; ++i)
+		LOG(INFO, "!", i, std::to_string(i));
+	
+	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
+		MSG("!", {"i", "0"}), MSG("!", {"i", "1"}), MSG("!", {"i", "2"}),
 	}));
 }

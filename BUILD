@@ -25,4 +25,5 @@ cc_library(
 		":sog",
 		":testlib",
 	],
+	defines = ["__LINE__=1337"] if src != "test/macro_func_test.cc" else [],
 ) for src in glob(["test/*_test.cc"])]

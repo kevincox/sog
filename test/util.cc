@@ -23,7 +23,16 @@ WithMemoryLogger::Pairs WithMemoryLogger::take_pairs() {
 		
 		r.emplace_back();
 		auto &out = r.back();
-		out.reserve(src.value_count);
+		out.reserve(src.value_count + 4);
+		
+		if (!src.file.empty())
+			out.emplace_back("FILE", src.file);
+		if (src.line)
+			out.emplace_back("LINE", std::to_string(src.line));
+		if (!src.function.empty())
+			out.emplace_back("FUNC", src.function);
+		if (!src.msg_template.empty())
+			out.emplace_back("MSG", src.msg_template);
 		
 		for (size_t i = 0; i < src.value_count; ++i)
 			out.emplace_back(src.keys[i], std::move(msg.values[i]));

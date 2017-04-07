@@ -26,7 +26,7 @@ namespace sog {
 	struct Source final {
 		std::experimental::string_view file;
 		std::experimental::string_view function;
-		uint32_t line;
+		uint32_t line = 0;
 		std::experimental::string_view msg_template;
 		size_t value_count;
 		const std::experimental::string_view *keys;
