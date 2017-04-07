@@ -71,16 +71,16 @@ namespace sog {
 #define _sog_LOG(level, msg, nn, keys, vals) \
 	do { \
 		static constexpr std::experimental::string_view _sog_keys[] { keys }; \
-		static ::sog::Source _sog_source { \
-			__FILE__, \
-			__PRETTY_FUNCTION__, \
+		static constexpr ::sog::Source _sog_source { \
+			{ __FILE__, sizeof(__FILE__) - 1 }, \
+			{ __PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 1 }, \
 			__LINE__, \
-			msg, \
+			{ msg, sizeof(msg) - 1 }, \
 			nn/2, \
 			_sog_keys \
 		}; \
-		/* ::std::tuple<vals> _sog_args { val_refs }; */ \
-		::sog::_submit(::sog::Message(&_sog_source, { vals })); \
+		static ::sog::SinkData *_sog_sink_data = ::sog::_prepare(&_sog_source); \
+		::sog::_submit(_sog_sink_data, ::sog::Message(&_sog_source, { vals })); \
 	} while(false)
 
 #define _sog_KEYS(r, _, i, e, ...) \

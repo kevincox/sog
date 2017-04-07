@@ -6,7 +6,7 @@
 namespace sog {
 	struct MemoryLogger: Sink {
 		std::vector<OwnedMessage> messages;
-		void log(Message msg) override;
+		void log(SinkData *, Message msg) override;
 	};
 }
 

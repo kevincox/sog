@@ -1,7 +1,7 @@
 #ifndef SOG___INIT_H
 #define SOG___INIT_H
 
-#include "base.h"
+#include "sink.h"
 
 namespace sog {
 	std::unique_ptr<Sink> Stdout();

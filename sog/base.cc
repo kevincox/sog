@@ -10,7 +10,7 @@ struct State {
 } state;
 
 struct Stdout: public sog::Sink {
-	void log(sog::Message msg) override {
+	void log(sog::SinkData *, sog::Message msg) override {
 		printf("Log\n");
 	};
 };
@@ -31,10 +31,10 @@ void sog::init(
 		state.sink = sog::Stdout();
 }
 
-void sog::_prepare(Source *s) {
-	state.sink->prepare(s);
+sog::SinkData *sog::_prepare(const Source *s) {
+	return state.sink->prepare(s);
 }
 
-void sog::_submit(Message m) {
-	state.sink->log(m);
+void sog::_submit(sog::SinkData *sd, Message m) {
+	state.sink->log(sd, m);
 }

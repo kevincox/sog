@@ -4,6 +4,12 @@
 #include "base.h"
 
 namespace sog {
+	struct Sink {
+		virtual ~Sink() {};
+		virtual SinkData *prepare(const Source *source);
+		virtual void log(SinkData *sd, Message msg) = 0;
+	};
+	
 	using OwnedValue = std::string;
 	
 	struct OwnedMessage {
