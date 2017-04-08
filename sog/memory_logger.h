@@ -3,9 +3,11 @@
 
 #include "sink.h"
 
+#include <queue>
+
 namespace sog {
 	struct MemoryLogger: Sink {
-		std::vector<OwnedMessage> messages;
+		std::queue<OwnedMessage> messages;
 		void log(SinkData *, Message msg) override;
 	};
 }

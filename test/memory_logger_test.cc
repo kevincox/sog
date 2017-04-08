@@ -2,8 +2,6 @@
 #include "test/util.h"
 #include "sog/dynamic.h"
 
-WithMemoryLogger logger;
-
 TEST(MemoryLogger, Basic) {
 	sog::DynamicLog log1;
 	log1.add("foo", "bar");
@@ -12,7 +10,7 @@ TEST(MemoryLogger, Basic) {
 	
 	log1.submit();
 	
-	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
+	EXPECT_EQ(logger.take_pairs(), Pairs({
 		{ {"foo", "bar"}, {"bar", "two"}, {"baz", "c"} },
 	}));
 	
@@ -27,8 +25,6 @@ TEST(MemoryLogger, Basic) {
 	log3.add("baz", "z");
 	log3.submit();
 	
-	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
-		{ {"a", "1"},   {"b", "2"},   {"c", "3"}   },
-		{ {"foo", "x"}, {"bar", "y"}, {"baz", "z"} },
-	}));
+	EXPECT_EQ(logger.take_pairs(), Pairs({{"a", "1"},   {"b", "2"},   {"c", "3"}}));
+	EXPECT_EQ(logger.take_pairs(), Pairs({ {"foo", "x"}, {"bar", "y"}, {"baz", "z"} }));
 }

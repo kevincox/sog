@@ -1,10 +1,5 @@
 #include "test/util.h"
 
-#include <gtest/gtest.h>
-#include "sog/sog.h"
-
-WithMemoryLogger logger;
-
 void count(int n) {
 	if (!n--)
 		return;
@@ -13,34 +8,36 @@ void count(int n) {
 	return count(n);
 }
 
-TEST(Macro, Func) {
+TEST_F(Sog, MacroFunc) {
 	LOG(INFO, "Calling 3 times.");
 	count(3);
 	
-	EXPECT_EQ(logger.take_pairs(), WithMemoryLogger::Pairs({
-		{
-			{"FILE", __FILE__},
-			{"LINE", "17"},
-			{"FUNC", "virtual void Macro_Func_Test::TestBody()"},
-			{"MSG", "Calling 3 times."},
-		}, {
+	EXPECT_EQ(logger.take_pairs(),
+		Pairs({
 			{"FILE", __FILE__},
 			{"LINE", "12"},
-			{"FUNC", "void count(int)"},
-			{"MSG", "$n more"},
-			{"n", "2"}
-		}, {
+			{"FUNC", "virtual void Sog_MacroFunc_Test::TestBody()"},
+			{"MSG", "Calling 3 times."}}));
+	EXPECT_EQ(logger.take_pairs(),
+		Pairs({
 			{"FILE", __FILE__},
-			{"LINE", "12"},
+			{"LINE", "7"},
 			{"FUNC", "void count(int)"},
 			{"MSG", "$n more"},
-			{"n", "1"}
-		}, {
+			{"n", "2"}}));
+	EXPECT_EQ(logger.take_pairs(),
+		Pairs({
 			{"FILE", __FILE__},
-			{"LINE", "12"},
+			{"LINE", "7"},
 			{"FUNC", "void count(int)"},
 			{"MSG", "$n more"},
-			{"n", "0"}
-		},
-	}));
+			{"n", "1"}}));
+	EXPECT_EQ(logger.take_pairs(),
+		Pairs({
+			{"FILE", __FILE__},
+			{"LINE", "7"},
+			{"FUNC", "void count(int)"},
+			{"MSG", "$n more"},
+			{"n", "0"}}));
+	EXPECT_NO_LOG();
 }
