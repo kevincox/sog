@@ -3,7 +3,9 @@ cc_library(
 	srcs = glob(["sog/*.cc"]),
 	hdrs = glob(["sog/*.h"]),
 	deps = [
-		"//external:boost",
+		"//external:boost_config",
+		"//external:boost_container",
+		"//external:boost_preprocessor",
 	],
 )
 

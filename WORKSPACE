@@ -1,49 +1,43 @@
 new_local_repository(
-	name = "boost_headers",
-	path = "/usr/include/boost",
+	name = "system",
+	path = "/",
 	build_file_content = """
 		package(default_visibility = [ "//visibility:public" ])
 		
 		cc_library(
-			name = "boost_headers",
-			hdrs = glob([".../*.h"]),
+			name = "boost_config",
+			hdrs = glob([
+				"usr/include/boost/config.hpp",
+				"usr/include/boost/config/...",
+			]),
 		)
-	""".replace("\n\t\t", "\n"),
-)
-
-new_local_repository(
-	name = "gtest_headers",
-	path = "/usr/include/gtest",
-	build_file_content = """
-		package(default_visibility = [ "//visibility:public" ])
 		
-		filegroup(
-			name = "headers",
-			srcs = glob(["..."]),
+		cc_library(
+			name = "boost_container",
+			hdrs = glob(["usr/include/boost/container/..."]),
 		)
-	""".replace("\n\t\t", "\n"),
-)
-
-new_local_repository(
-	name = "system",
-	path = "/usr/lib/",
-	build_file_content = """
-		package(default_visibility = [ "//visibility:public" ])
+		
+		cc_library(
+			name = "boost_preprocessor",
+			hdrs = glob(["usr/include/boost/preprocessor/..."]),
+		)
 		
 		cc_library(
 			name = "gtest",
-			srcs = [ "libgtest.so" ],
-			hdrs = [ "@gtest_headers//:headers" ],
+			srcs = [ "usr/lib/libgtest.so" ],
+			hdrs = glob(["usr/include/gtest/..."]),
 		)
 		
 		cc_library(
 			name = "gtest_main",
-			srcs = [ "libgtest_main.so" ],
-			hdrs = [ "@gtest_headers//:headers" ]
+			srcs = [ "usr/lib/libgtest_main.so" ],
+			deps = [ "gtest" ]
 		)
 	""".replace("\n\t\t", "\n"),
 )
 
-bind(name="boost", actual="@boost_headers")
+bind(name="boost_config", actual="@system//:boost_config")
+bind(name="boost_container", actual="@system//:boost_container")
+bind(name="boost_preprocessor", actual="@system//:boost_preprocessor")
 bind(name="gtest", actual="@system//:gtest")
 bind(name="gtest_main", actual="@system//:gtest_main")
