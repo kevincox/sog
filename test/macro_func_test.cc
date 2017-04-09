@@ -1,4 +1,4 @@
-#include "test/util.h"
+#include "util.h"
 
 void count(int n) {
 	if (!n--)
