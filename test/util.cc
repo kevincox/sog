@@ -1,5 +1,7 @@
 #include "util.h"
 
+#include "sog/format.h"
+
 WithMemoryLogger logger;
 
 WithMemoryLogger::WithMemoryLogger() {
@@ -8,8 +10,14 @@ WithMemoryLogger::WithMemoryLogger() {
 	sog::init("test", std::move(logger));
 }
 
+sog::OwnedMessage WithMemoryLogger::take() {
+	auto r = std::move(memory_logger->messages.front());
+	memory_logger->messages.pop();
+	return r;
+}
+
 Pairs WithMemoryLogger::take_pairs() {
-	auto &msg = memory_logger->messages.front();
+	auto msg = take();
 	auto &src = *msg.source;
 	
 	Pairs out;
@@ -27,14 +35,18 @@ Pairs WithMemoryLogger::take_pairs() {
 	for (size_t i = 0; i < src.value_count; ++i)
 		out.emplace_back(src.keys[i], std::move(msg.values[i]));
 	
-	memory_logger->messages.pop();
-	
 	return out;
 }
 
 void WithMemoryLogger::clear() {
 	while (!memory_logger->messages.empty())
 		memory_logger->messages.pop();
+}
+
+std::string WithMemoryLogger::take_formatted() {
+	auto message = take();
+	sog::Formatter formatter(message.source);
+	return formatter.format(message);
 }
 
 void Sog::SetUp() {

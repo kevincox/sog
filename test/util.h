@@ -23,8 +23,10 @@ struct WithMemoryLogger {
 	sog::MemoryLogger *memory_logger;
 	WithMemoryLogger();
 	
+	sog::OwnedMessage take();
 	Pairs take_pairs();
 	void clear();
+	std::string take_formatted();
 };
 
 extern WithMemoryLogger logger;

@@ -15,42 +15,54 @@
 
 namespace sog {
 	namespace {
-		constexpr size_t _macro_key_len(const char *arg) {
-			size_t r = 0;
-			while (true) {
-				char c = arg[r++];
-				if (
-					('a' <= c && c <= 'z') ||
-					('A' <= c && c <= 'Z') ||
-					('0' <= c && c <= '9') ||
-					'_' == c) continue;
-				return r-1;
-			}
-		}
-		
-		template<size_t n>
-		struct _StaticStr {
-			char str[n+1];
-			static constexpr size_t len = n;
-			constexpr _StaticStr(const char *arg): str() {
-				size_t i = 0;
-				while (i < n) {
-					str[i] = arg[i];
-					i++;
-				}
-				str[i] = 0;
-			}
+		constexpr
+		bool _eq(std::experimental::string_view a, std::experimental::string_view b) {
+			if (a.size() != b.size())
+				return false;
+			for (size_t i = 0; i < a.size(); ++i)
+				if (a[i] != b[i])
+					return false;
+			return true;
 		};
 		
-		struct _macro_extract {
-			const char *k;
-			Value v;
+		constexpr static bool _is_valid(const Source *source) {
+			auto t = source->msg_template;
+			size_t i = 0;
 			
-			explicit inline _macro_extract(const char *k): k(k) {}
-			inline _macro_extract &operator *(Value v) { this->v = v; return *this; }
-			inline _macro_extract &operator =(Value v) { return *this; }
-			inline _macro_extract &operator =(_macro_extract &&v) = default;
-		};
+			while (i < t.size()) {
+				if (i >= t.size() || t[i] != '$') {
+					i++;
+					continue;
+				}
+				
+				// Trailing $ is illegal.
+				if (++i >= t.size())
+					return false;
+				
+				if (t[i] == '$') {
+					i++;
+					continue;
+				}
+				
+				auto e = i;
+				while (e < t.size() && (
+					( 'a' <= t[e] && t[e] <= 'z' ) ||
+					( 'A' <= t[e] && t[e] <= 'Z' ) ||
+					( '0' <= t[e] && t[e] <= '9' )))
+					e++;
+				auto key = t.substr(i, e-i);
+				
+				// Check that the format key has a match.
+				size_t ki = 0;
+				for (ki = 0; ki < source->value_count; ki++)
+					if (_eq(key, source->keys[ki]))
+						break;
+				if (ki >= source->value_count)
+					return false;
+			}
+			
+			return true;
+		}
 		
 		template <typename T>
 		struct _valref {
@@ -82,6 +94,8 @@ namespace sog {
 			n, \
 			_sog_keys \
 		}; \
+		static_assert(::sog::_is_valid(&_sog_source), \
+			"Invalid template string (check formatting and argument names.)"); \
 		static ::sog::SinkData *_sog_sink_data = ::sog::_prepare(&_sog_source); \
 		::sog::_submit(_sog_sink_data, ::sog::Message(&_sog_source, { vals })); \
 	} while(false)
