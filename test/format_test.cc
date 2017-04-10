@@ -15,6 +15,7 @@ TEST_F(Sog, FormatCheck) {
 	EXPECT_TRUE((s.msg_template = "My $foo is foo", sog::_is_valid(&s)));
 	EXPECT_TRUE((s.msg_template = "$a_str-key My $foo is $a", sog::_is_valid(&s)));
 	EXPECT_TRUE((s.msg_template = "$$$foo", sog::_is_valid(&s)));
+	EXPECT_TRUE((s.msg_template = "$$bar", sog::_is_valid(&s)));
 
 	EXPECT_FALSE((s.msg_template = "My $bar is a foo.", sog::_is_valid(&s)));
 	EXPECT_FALSE((s.msg_template = "My $bar is a foo$", sog::_is_valid(&s)));

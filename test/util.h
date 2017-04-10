@@ -9,7 +9,7 @@
 #define EXPECT_LOG(msg, ...) \
 	EXPECT_EQ(logger.take_pairs(), Pairs({ \
 	{"FILE", __FILE__}, \
-	{"LINE", std::to_string(__LINE__)}, \
+	{"LINE", std::to_string(_sog_LINE)}, \
 	{"FUNC", __PRETTY_FUNCTION__}, \
 	{"MSG", msg}, \
 	__VA_ARGS__ }))

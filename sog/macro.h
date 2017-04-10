@@ -13,6 +13,10 @@
 
 #include "base.h"
 
+#ifndef _sog_LINE
+#define _sog_LINE __LINE__
+#endif
+
 namespace sog {
 	namespace {
 		constexpr
@@ -89,7 +93,7 @@ namespace sog {
 		static constexpr ::sog::Source _sog_source { \
 			{ __FILE__, sizeof(__FILE__) - 1 }, \
 			{ __PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 1 }, \
-			__LINE__, \
+			_sog_LINE, \
 			{ msg, sizeof(msg) - 1 }, \
 			n, \
 			_sog_keys \
