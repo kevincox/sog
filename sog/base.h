@@ -16,14 +16,31 @@ namespace sog {
 	struct Source;
 	struct Message;
 	
+	using Level = uint8_t;
+	namespace level {
+		constexpr Level FATAL = 0;
+		constexpr Level ERROR = 1;
+		constexpr Level WARN = 2;
+		constexpr Level INFO = 3;
+		constexpr Level DEBUG = 4;
+		constexpr Level TRACE = 5;
+		
+#ifdef NDEBUG
+		constexpr Level DFATAL = FATAL;
+#else
+		constexpr Level DFATAL = ERROR;
+#endif
+	};
+	
 	struct SinkData {
 		virtual ~SinkData() {};
 	};
 	
-	SinkData *_prepare(const Source *s);
+	std::unique_ptr<SinkData> _prepare(const Source *s);
 	void _submit(SinkData *s, Message m);
 	
 	struct Source final {
+		Level level;
 		std::experimental::string_view file;
 		std::experimental::string_view function;
 		uint32_t line = 0;
@@ -34,6 +51,7 @@ namespace sog {
 		Source() {}
 		
 		inline constexpr Source(
+			Level level,
 			std::experimental::string_view file,
 			std::experimental::string_view function,
 			uint32_t line,
@@ -41,6 +59,7 @@ namespace sog {
 			size_t value_count,
 			const std::experimental::string_view *keys
 		):
+			level(level),
 			file(file),
 			function(function),
 			line(line),

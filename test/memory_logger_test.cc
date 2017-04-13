@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "util.h"
+#include "with_memory_logger.h"
 #include "sog/dynamic.h"
 
 TEST(MemoryLogger, Basic) {

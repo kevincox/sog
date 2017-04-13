@@ -41,7 +41,7 @@ namespace sog {
 				
 				// Trailing $ is illegal.
 				if (++i >= t.size())
-					return false;
+					throw "Template ends with '$'";
 				
 				if (t[i] == '$') {
 					i++;
@@ -62,7 +62,7 @@ namespace sog {
 					if (_eq(key, source->keys[ki]))
 						break;
 				if (ki >= source->value_count)
-					return false;
+					throw "Unknown parameter in template.";
 			}
 			
 			return true;
@@ -84,13 +84,15 @@ namespace sog {
 		BOOST_PP_SEQ_FOR_EACH_I(_sog_KEYS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)), \
 		BOOST_PP_SEQ_FOR_EACH_I(_sog_VALS, , BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)))
 
-#define _sog_LOG(level, msg, n, keys, vals) \
+#define _sog_LOG(lvl, msg, n, keys, vals) \
 	do { \
+		using namespace ::sog::level; \
 		static constexpr std::experimental::string_view _sog_keys[] { keys }; \
 		static_assert( \
 			n == 0 || sizeof(_sog_keys)/sizeof(_sog_keys[0]) == n, \
 			"Odd number of arguments to LOG."); \
 		static constexpr ::sog::Source _sog_source { \
+			lvl, \
 			{ __FILE__, sizeof(__FILE__) - 1 }, \
 			{ __PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 1 }, \
 			_sog_LINE, \
@@ -100,8 +102,9 @@ namespace sog {
 		}; \
 		static_assert(::sog::_is_valid(&_sog_source), \
 			"Invalid template string (check formatting and argument names.)"); \
-		static ::sog::SinkData *_sog_sink_data = ::sog::_prepare(&_sog_source); \
-		::sog::_submit(_sog_sink_data, ::sog::Message(&_sog_source, { vals })); \
+		static std::unique_ptr<::sog::SinkData> _sog_sink_data = \
+			::sog::_prepare(&_sog_source); \
+		::sog::_submit(_sog_sink_data.get(), ::sog::Message(&_sog_source, { vals })); \
 	} while(false)
 
 #define _sog_KEYS(r, _, i, e, ...) \

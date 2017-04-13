@@ -22,8 +22,13 @@ namespace sog {
 		
 	public:
 		Formatter(const Source *source);
+		void format(Message m, std::ostream *out);
 		std::string format(const OwnedMessage &m);
+		
+		friend std::ostream &operator<<(std::ostream&, sog::Formatter);
 	};
+	
+	std::ostream &operator<<(std::ostream &out, sog::Formatter formatter);
 }
 
 #endif

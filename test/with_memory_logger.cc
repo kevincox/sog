@@ -1,18 +1,15 @@
-#include "util.h"
+#define DONT_DEFINE_LOGGER
+#include "with_memory_logger.h"
 
 #include "sog/format.h"
 
-WithMemoryLogger logger;
-
 WithMemoryLogger::WithMemoryLogger() {
-	auto logger = std::make_unique<sog::MemoryLogger>();
-	memory_logger = logger.get();
-	sog::init("test", std::move(logger));
+	sog::init(&memory_logger);
 }
 
 sog::OwnedMessage WithMemoryLogger::take() {
-	auto r = std::move(memory_logger->messages.front());
-	memory_logger->messages.pop();
+	auto r = std::move(memory_logger.messages.front());
+	memory_logger.messages.pop();
 	return r;
 }
 
@@ -39,8 +36,8 @@ Pairs WithMemoryLogger::take_pairs() {
 }
 
 void WithMemoryLogger::clear() {
-	while (!memory_logger->messages.empty())
-		memory_logger->messages.pop();
+	while (!memory_logger.messages.empty())
+		memory_logger.messages.pop();
 }
 
 std::string WithMemoryLogger::take_formatted() {

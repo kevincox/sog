@@ -15,12 +15,12 @@
 	__VA_ARGS__ }))
 
 #define EXPECT_NO_LOG() \
-	EXPECT_EQ(logger.memory_logger->messages.size(), 0)
+	EXPECT_EQ(logger.memory_logger.messages.size(), 0)
 
 using Pairs = std::vector<std::pair<std::string,sog::OwnedValue>>;
 
 struct WithMemoryLogger {
-	sog::MemoryLogger *memory_logger;
+	sog::MemoryLogger memory_logger;
 	WithMemoryLogger();
 	
 	sog::OwnedMessage take();
@@ -29,9 +29,12 @@ struct WithMemoryLogger {
 	std::string take_formatted();
 };
 
-extern WithMemoryLogger logger;
-
 struct Sog: public ::testing::Test  {
 	void SetUp() override;
 	void TearDown() override;
 };
+
+extern WithMemoryLogger logger;
+#ifndef DONT_DEFINE_LOGGER
+WithMemoryLogger logger;
+#endif

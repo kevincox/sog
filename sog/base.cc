@@ -1,40 +1,28 @@
 #include "init.h"
+#include "pretty.h"
 
 using string_view = std::experimental::string_view;
 
 namespace {
 
-struct State {
-	string_view name;
-	std::unique_ptr<sog::Sink> sink;
-} state;
-
-struct Stdout: public sog::Sink {
-	void log(sog::SinkData *, sog::Message msg) override {
-		printf("Log\n");
-	};
-};
+sog::Sink *sink = nullptr;
 
 }
 
-std::unique_ptr<sog::Sink> sog::Stdout() { return std::make_unique<::Stdout>(); }
-
-void sog::init(
-	std::experimental::string_view name,
-	std::unique_ptr<sog::Sink> sink)
-{
-	state.name = name;
+void sog::init(sog::Sink *newsink) {
+	assert(sink == nullptr);
+	assert(newsink != nullptr);
 	
-	if (sink)
-		state.sink = std::move(sink);
+	if (newsink)
+		sink = newsink;
 	else
-		state.sink = sog::Stdout();
+		sink = new sog::PrettySink(&std::cerr);
 }
 
-sog::SinkData *sog::_prepare(const Source *s) {
-	return state.sink->prepare(s);
+std::unique_ptr<sog::SinkData> sog::_prepare(const Source *s) {
+	return sink->prepare(s);
 }
 
 void sog::_submit(sog::SinkData *sd, Message m) {
-	state.sink->log(sd, m);
+	sink->log(sd, m);
 }

@@ -1,4 +1,5 @@
 #include "format.h"
+#include <iostream>
 
 sog::Formatter::Formatter(const Source *source) {
 	auto t = source->msg_template;
@@ -19,7 +20,7 @@ sog::Formatter::Formatter(const Source *source) {
 			( '0' <= t[e] && t[e] < '9' )))
 			e++;
 		
-		auto key = t.substr(i, e-1);
+		auto key = t.substr(i, e-i);
 		size_t ki;
 		for (ki = 0; ki < source->value_count; ki++)
 			if (key == source->keys[ki])
@@ -30,22 +31,44 @@ sog::Formatter::Formatter(const Source *source) {
 		i = e;
 		t = t.substr(i);
 	}
+	chunks.emplace_back(t, NONE, 0);
 }
 
-std::string sog::Formatter::format(const OwnedMessage &m) {
-	std::ostringstream r;
-	
+void sog::Formatter::format(Message m, std::ostream *out) {
 	for (size_t i = 0; i < chunks.size(); ++i) {
 		auto &chunk = chunks[i];
-		r << chunk.literal;
+		*out << chunk.literal;
 		switch (chunk.type) {
 		case NONE:
 			break;
 		default:
-			r << m.values[chunk.value];
+			*out << m.values[chunk.value];
 			break;
 		}
 	}
-	
+}
+
+std::string sog::Formatter::format(const OwnedMessage &m) {
+	std::ostringstream r;
+	Value values[m.values.size()];
+	for (size_t i = 0; i < m.values.size(); ++i)
+		values[i] = m.values[i];
+	format(Message(m.source, values), &r);
 	return r.str();
+}
+
+std::ostream &sog::operator<<(std::ostream& out, sog::Formatter formatter) {
+	out << "Formatter(";
+	for (auto &chunk: formatter.chunks) {
+		out << "\n\t" << chunk.literal;
+		switch (chunk.type) {
+		case Formatter::NONE:
+			break;
+		default:
+			out << "\n\tLit(" << chunk.value << ')';
+			break;
+		}
+	}
+	out << ")";
+	return out;
 }

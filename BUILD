@@ -2,11 +2,13 @@ cc_library(
 	name = "sog",
 	srcs = glob(["sog/*.cc"]),
 	hdrs = glob(["sog/*.h"]),
-	deps = [
-		"//external:boost_config",
-		"//external:boost_container",
-		"//external:boost_preprocessor",
-	],
+)
+
+cc_library(
+	name = "sog_test",
+	srcs = glob(["sog/*.cc"]),
+	hdrs = glob(["sog/*.h"]),
+	defines = ["SOG_FAKE_SEC=950455800", "SOG_FAKE_USEC=50000"],
 )
 
 cc_library(
@@ -14,17 +16,15 @@ cc_library(
 	srcs = glob(["test/*.cc"], exclude=glob(["test/*_test.cc"])),
 	hdrs = glob(["test/*.h"]),
 	deps = [
-		":sog",
+		":sog_test",
 	],
+	linkopts = ["-lgtest_main", "-lgtest"],
 )
 
 [cc_test(
 	name = src[len("test/"):-len(".cc")],
 	srcs = [ src ],
 	deps = [
-		"//external:gtest",
-		"//external:gtest_main",
-		":sog",
 		":testlib",
 	],
 	defines = ["_sog_LINE=1337"] if src != "test/macro_func_test.cc" else [],

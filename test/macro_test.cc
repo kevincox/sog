@@ -1,4 +1,4 @@
-#include "util.h"
+#include "with_memory_logger.h"
 
 TEST_F(Sog, Macro) {
 	std::string secret = "top secret";
