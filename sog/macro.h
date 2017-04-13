@@ -78,6 +78,16 @@ namespace sog {
 	}
 }
 
+/** Log a message.
+ * 
+ * Note that none, some or all values may be evaluated depending on if the log
+ * message is enabled and what values the sink needs. (currently all values
+ * are always evaluated but this will change)
+ * 
+ * @param level The severity of the message as a sog::level constant or a number.
+ * @param msg The human readable message.
+ * @param ... Arguments in pairs of keys (unquoted identifiers) and values (any c++ expression).
+ */
 #define LOG(level, msg, ...) \
 	_sog_LOG(level, msg, \
 		BOOST_PP_VARIADIC_SIZE(__VA_ARGS__)/2, \

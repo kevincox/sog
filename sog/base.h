@@ -39,13 +39,27 @@ namespace sog {
 	std::unique_ptr<SinkData> _prepare(const Source *s);
 	void _submit(SinkData *s, Message m);
 	
+	/** A log source.
+	 * 
+	 * A source is a collection of metadata about a "type" of log message. This
+	 * is generally created by the LOG() macro. Sources should be immutable once
+	 * created.
+	 */
 	struct Source final {
 		Level level;
 		std::experimental::string_view file;
 		std::experimental::string_view function;
 		uint32_t line = 0;
 		std::experimental::string_view msg_template;
+		
+		/** Number of values for this source.
+		 */
 		size_t value_count;
+		
+		/** The keys for this source.
+		 * 
+		 * This points to the first element of an array of length value_count.
+		 */
 		const std::experimental::string_view *keys;
 		
 		Source() {}
@@ -68,8 +82,19 @@ namespace sog {
 			keys(keys) { }
 	};
 	
+	/** A logged message.
+	 */
 	struct Message {
+		/** The source that logged this message.
+		 */
 		const Source *source;
+		
+		/** Values of this message.
+		 * 
+		 * This points to the first value of an array of length
+		 * source->value_count. The values map to the respective key in
+		 * source->keys.
+		 */
 		const Value *values;
 		
 		Message() {}
