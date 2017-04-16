@@ -42,18 +42,15 @@ void sog::Formatter::format(Message m, std::ostream *out) {
 		case NONE:
 			break;
 		default:
-			*out << m.values[chunk.value];
+			*out << m.values[chunk.value].data;
 			break;
 		}
 	}
 }
 
-std::string sog::Formatter::format(const OwnedMessage &m) {
+std::string sog::Formatter::format(const Message &m) {
 	std::ostringstream r;
-	Value values[m.values.size()];
-	for (size_t i = 0; i < m.values.size(); ++i)
-		values[i] = m.values[i];
-	format(Message(m.source, values), &r);
+	format(m, &r);
 	return r.str();
 }
 

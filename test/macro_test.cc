@@ -21,6 +21,9 @@ TEST_F(Sog, MacroMultiScope) {
 		LOG(WARN, "If: $other",
 			var, secret,
 			other, "foo");
+		
+		LOG(WARN, "If: $var",
+			var, 5);
 	}
 	
 	LOG(INFO, "Last: $var",
@@ -29,6 +32,7 @@ TEST_F(Sog, MacroMultiScope) {
 	
 	EXPECT_LOG("Var: $var", {"var", "top secret"}, {"other", "top secret bar"});
 	EXPECT_LOG("If: $other", {"var", "top secret"}, {"other", "foo"});
+	EXPECT_LOG("If: $var", {"var", 5});
 	EXPECT_LOG("Last: $var", {"var", "top secretive"}, {"another", ""});
 }
 

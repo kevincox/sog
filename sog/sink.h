@@ -4,6 +4,10 @@
 #include "base.h"
 
 namespace sog {
+	inline std::ostream &operator<<(std::ostream &out, const sog::Value &v) {
+		return out << v.data;
+	}
+	
 	/** Sink interface.
 	 * 
 	 * This is the interface that should be written to for consuming messages
@@ -53,18 +57,20 @@ namespace sog {
 	 */
 	char level_char(sog::Level l);
 	
-	using OwnedValue = std::string;
-	
 	struct OwnedMessage {
 		const Source *source;
-		std::vector<OwnedValue> values;
+		std::vector<Value> values;
 		
-		explicit OwnedMessage(const Message &msg):
+		OwnedMessage(Message msg):
 			source(msg.source)
 		{
 			values.reserve(source->value_count);
 			for (size_t i = 0; i < source->value_count; ++i)
-				values.emplace_back(msg.values[i]);
+				values.emplace_back(msg.values[i].owned());
+		}
+		
+		Message ref() {
+			return { source, values.data() };
 		}
 	};
 }

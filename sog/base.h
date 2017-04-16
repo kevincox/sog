@@ -2,6 +2,7 @@
 #define SOG___BASE_H
 
 #include <assert.h>
+#include <boost/variant.hpp>
 #include <experimental/string_view>
 #include <initializer_list>
 #include <memory>
@@ -10,8 +11,44 @@
 // #include <variant>
 
 namespace sog {
-	// using value = std::variant<long long,string,double>;
-	using Value = std::experimental::string_view;
+	struct Value {
+		using Data = boost::variant<
+			long,
+			double,
+			std::string,
+			std::experimental::string_view>;
+		Data data;
+		
+		inline Value(double f): data(f) {}
+		inline Value(std::string &&s): data(s) {}
+		inline Value(std::experimental::string_view s): data(s) {}
+		
+		template <class T, typename=std::enable_if_t<std::is_integral<T>::value>>
+		inline Value(T i): data(static_cast<long>(i)) {}
+		
+		template <class... A>
+		inline Value(A&... a): data(std::experimental::string_view{std::forward<A>(a)...}) {}
+		
+		// Prevent accidental copies.
+		Value(const Value &v): data(v.data) {
+			assert(!boost::get<std::string>(&v.data));
+		}
+		Value(Value &&source) = default;
+		
+		// Explicit reference.
+		Value ref() const { return *this; };
+		
+		// Explicit copy.
+		Value owned() const {
+			const std::string *s = boost::get<std::string>(&data);
+			if (s)
+				return std::string{*s};
+			return *this;
+		};
+		
+		bool operator==(const Value &that) const;
+	};
+	
 	
 	struct Source;
 	struct Message;
@@ -84,7 +121,7 @@ namespace sog {
 	
 	/** A logged message.
 	 */
-	struct Message {
+	struct Message final {
 		/** The source that logged this message.
 		 */
 		const Source *source;

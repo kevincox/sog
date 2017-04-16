@@ -21,13 +21,13 @@ Pairs WithMemoryLogger::take_pairs() {
 	out.reserve(src.value_count + 4);
 	
 	if (!src.file.empty())
-		out.emplace_back("FILE", src.file);
+		out.emplace_back("FILE", std::string{src.file});
 	if (src.line)
-		out.emplace_back("LINE", std::to_string(src.line));
+		out.emplace_back("LINE", src.line);
 	if (!src.function.empty())
-		out.emplace_back("FUNC", src.function);
+		out.emplace_back("FUNC", std::string{src.function});
 	if (!src.msg_template.empty())
-		out.emplace_back("MSG", src.msg_template);
+		out.emplace_back("MSG", std::string{src.msg_template});
 	
 	for (size_t i = 0; i < src.value_count; ++i)
 		out.emplace_back(src.keys[i], std::move(msg.values[i]));
@@ -43,7 +43,7 @@ void WithMemoryLogger::clear() {
 std::string WithMemoryLogger::take_formatted() {
 	auto message = take();
 	sog::Formatter formatter(message.source);
-	return formatter.format(message);
+	return formatter.format(message.ref());
 }
 
 void Sog::SetUp() {

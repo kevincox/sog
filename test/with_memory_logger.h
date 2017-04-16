@@ -9,7 +9,7 @@
 #define EXPECT_LOG(msg, ...) \
 	EXPECT_EQ(logger.take_pairs(), Pairs({ \
 	{"FILE", __FILE__}, \
-	{"LINE", std::to_string(_sog_LINE)}, \
+	{"LINE", _sog_LINE}, \
 	{"FUNC", __PRETTY_FUNCTION__}, \
 	{"MSG", msg}, \
 	__VA_ARGS__ }))
@@ -17,7 +17,7 @@
 #define EXPECT_NO_LOG() \
 	EXPECT_EQ(logger.memory_logger.messages.size(), 0)
 
-using Pairs = std::vector<std::pair<std::string,sog::OwnedValue>>;
+using Pairs = std::vector<std::pair<std::string,sog::Value>>;
 
 struct WithMemoryLogger {
 	sog::MemoryLogger memory_logger;

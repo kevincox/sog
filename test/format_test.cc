@@ -11,6 +11,11 @@ TEST_F(Sog, Format) {
 	EXPECT_EQ(logger.take_formatted(), " Foo ");
 }
 
+TEST_F(Sog, FormatTypes) {
+	LOG(INFO, "$int $float $str", int, 5, float, 3.1415, str, "a string");
+	EXPECT_EQ(logger.take_formatted(), "5 3.1415 a string");
+}
+
 TEST_F(Sog, FormatCheck) {
 	std::vector<std::experimental::string_view> keys {"a", "foo", "a_str-key"};
 	sog::Source s { sog::level::INFO, __FILE__, "func", __LINE__, "", 3, keys.data()};
