@@ -45,10 +45,16 @@ struct Data: public sog::SinkData {
 }
 
 std::unique_ptr<sog::SinkData> sog::PrettySink::prepare(const sog::Source *source) {
+	if (source->msg_template.empty())
+		return nullptr;
+	
 	return std::make_unique<Data>(source);
 }
 
 void sog::PrettySink::log(sog::SinkData *sd, sog::Message msg) {
+	if (!sd)
+		return;
+	
 	Data *data = (Data*)sd;
 	
 	timeval time;

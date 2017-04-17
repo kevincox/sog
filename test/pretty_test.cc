@@ -56,3 +56,8 @@ TEST_F(Pretty, Formatting) {
 	LOG(WARN, "$a $a $b $a", a, "A", b, "B", c, "C");
 	EXPECT_EQ(logger.next_line(), "2000-02-13T15:30:00 W pretty_test.cc:1337 A A B A");
 }
+
+TEST_F(Pretty, Empty) {
+	LOG(INFO, "", foo, "a foo", bar, 5);
+	LOG(9, "");
+}
