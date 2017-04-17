@@ -30,7 +30,7 @@ void sog::init(sog::Sink *newsink) {
 	if (newsink)
 		sink = newsink;
 	else
-		sink = new sog::PrettySink(&std::cerr);
+		sink = new sog::PrettySink(&std::clog);
 }
 
 std::unique_ptr<sog::SinkData> sog::_prepare(const Source *s) {
