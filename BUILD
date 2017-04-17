@@ -2,7 +2,7 @@ cc_library(
 	name = "sog",
 	srcs = glob(["sog/*.cc"]),
 	hdrs = glob(["sog/*.h"]),
-	linkopts = ["-lsystemd"],
+	linkopts = ["-lboost_iostreams", "-lsystemd"],
 	visibility = [ "//visibility:public" ],
 )
 
@@ -11,7 +11,7 @@ cc_library(
 	srcs = glob(["sog/*.cc"]),
 	hdrs = glob(["sog/*.h"]),
 	defines = ["SOG_FAKE_SEC=950455800", "SOG_FAKE_USEC=50000"],
-	linkopts = ["-lsystemd"],
+	linkopts = ["-lboost_iostreams", "-lsystemd"],
 )
 
 cc_library(

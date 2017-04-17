@@ -3,11 +3,15 @@
 
 #include "sink.h"
 
+#include <boost/iostreams/device/file_descriptor.hpp>
 #include <systemd/sd-journal.h>
 
 namespace sog {
 	struct JournaldSink: public sog::Sink {
-		JournaldSink() {}
+		int socket;
+		~JournaldSink();
+		JournaldSink();
+		
 		std::unique_ptr<SinkData> prepare(const Source *source) override;
 		void log(SinkData *sd, Message msg) override;
 	};
