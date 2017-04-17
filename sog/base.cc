@@ -25,7 +25,6 @@ bool sog::Value::operator==(const Value &that) const {
 
 void sog::init(sog::Sink *newsink) {
 	assert(sink == nullptr);
-	assert(newsink != nullptr);
 	
 	if (newsink)
 		sink = newsink;

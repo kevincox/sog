@@ -46,7 +46,7 @@ struct ToJsonVisitor {
 
 std::vector<std::string> make_chunks(const sog::Source *source) {
 	std::vector<std::string> r;
-	r.reserve(source->value_count);
+	r.reserve(source->value_count + 3);
 	
 	r.emplace_back("{\"_msg\":\"");
 	

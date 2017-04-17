@@ -32,6 +32,7 @@ This requires no allocations once prepared. This overhead is likely far less the
 Sog uses pluggable sinks. This means that your program can choose what to do with it's log messages. It's easy to [write your own](sog/sink.h) and sog comes with the following sinks created for you.
 - PrettySink: This sink it intended for human output, it evaluates the template with the provided values and logs the message to the terminal (or any provided std::ostream).
 - JsonSink: This logs one JSON object on it's own line for each message.
+- JournaldSink: This logs to [journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html).
 - TODO: FanSink: This sink sends messages to any number of other sinks. Useful for logging full messages (example JSON) while still outputting to the terminal for developers.
 - TODO: BufferSink: This sink buffers messages temporarily in memory before forwarding to another sink.
 
