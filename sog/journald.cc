@@ -1,3 +1,5 @@
+#define SD_JOURNAL_SUPPRESS_LOCATION
+
 #include <boost/algorithm/string/case_conv.hpp>
 #include <sys/uio.h>
 #include <systemd/sd-journal.h>
@@ -12,23 +14,6 @@ struct ToStringVisitor {
 	std::string operator()(const double &s) const { return std::to_string(s); }
 	std::string operator()(const std::string &s) const { return std::move(s); }
 	std::string operator()(const std::experimental::string_view &s) const { return std::string(s); }
-};
-
-struct ToIovecVisitor {
-	iovec operator()(const long &s) const { assert(false); }
-	iovec operator()(const double &s) const { assert(false); }
-	iovec operator()(const std::string &s) const {
-		iovec r;
-		r.iov_base = (void*)s.data();
-		r.iov_len = s.size();
-		return r;
-	}
-	iovec operator()(const std::experimental::string_view &s) const {
-		iovec r;
-		r.iov_base = (void*)s.data();
-		r.iov_len = s.size();
-		return r;
-	}
 };
 
 std::vector<std::string> make_chunks(const sog::Source *source) {
