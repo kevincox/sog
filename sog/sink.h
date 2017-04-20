@@ -24,6 +24,10 @@ namespace sog {
 		 * use of sog sources are never destructed but there is an API provided
 		 * for "dynamic" logging in which the destruction of sources is common.
 		 * 
+		 * @warning This function must be reentrant. It will only be called once
+		 *	for any given source but it may be called for multiple sources
+		 *	concurrently.
+		 * 
 		 * @param source The source to prepare for.
 		 * @return Arbitrary data.
 		 */
@@ -35,6 +39,9 @@ namespace sog {
 		 * and a sog::Message. The msg.source attribute will be the same source
 		 * (both in location and content) as the source passed to the prepare()
 		 * call that produced sink_data.
+		 * 
+		 * @warning This function must be reentrant. It will be called
+		 *	concurrently for the same and different sinks.
 		 * 
 		 * @param sink_data Data from a previous call to prepare()
 		 * @param msg The message to log.
