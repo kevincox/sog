@@ -23,18 +23,19 @@ struct ToStringVisitor {
 	std::string operator()(const std::experimental::string_view &s) const { return std::string(s); }
 };
 
-void write_u64le(std::ostream *out, uint64_t i) {
+void write_u64le(std::string *out, uint64_t i) {
 	for (size_t bit = 0; bit < 64; bit += 8)
-		*out << (char)(i >> bit);
+		*out += (char)(i >> bit);
 }
 
 void write_record(
-	std::ostream *out, std::experimental::string_view k, std::experimental::string_view v)
+	std::string *out, std::experimental::string_view k, std::experimental::string_view v)
 {
-	*out << k << '\n';
+	out->append(k.data(), k.size());
+	*out += '\n';
 	write_u64le(out, v.size());
-	*out << v;
-	*out << '\n';
+	out->append(v.data(), v.size());
+	*out += '\n';
 }
 
 std::vector<std::string> make_chunks(const sog::Source *source) {
@@ -93,23 +94,39 @@ std::unique_ptr<sog::SinkData> sog::JournaldSink::prepare(const sog::Source *sou
 void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	Data *data = (Data*)sd;
 	
-	boost::iostreams::stream<boost::iostreams::file_descriptor> memfd(
-		open("/dev/shm", O_CLOEXEC|O_TMPFILE|O_RDWR|O_EXCL), boost::iostreams::close_handle);
+	thread_local static std::string buf;
+	buf.clear(); // Thread local to prevent allocations.
 	
-	write_record(&memfd, "MESSAGE", data->formatter.format(msg));
-	write_record(&memfd, "SOG_TMPL", msg.source->msg_template);
-	write_record(&memfd, "PRIORITY", std::to_string(msg.source->level));
-	write_record(&memfd, "CODE_FILE", msg.source->file);
-	write_record(&memfd, "CODE_FUNC", msg.source->function);
-	write_record(&memfd, "CODE_LINE", std::to_string(msg.source->line));
+	write_record(&buf, "MESSAGE", data->formatter.format(msg));
+	write_record(&buf, "SOG_TMPL", msg.source->msg_template);
+	write_record(&buf, "PRIORITY", std::to_string(msg.source->level));
+	write_record(&buf, "CODE_FILE", msg.source->file);
+	write_record(&buf, "CODE_FUNC", msg.source->function);
+	write_record(&buf, "CODE_LINE", std::to_string(msg.source->line));
 	
 	for (size_t i = 0; i < msg.source->value_count; ++i)
 		write_record(
-			&memfd,
+			&buf,
 			data->chunks[i],
 			boost::apply_visitor(ToStringVisitor(), msg.values[i].data));
 	
 	msghdr msghdr{0};
+	
+	iovec iov { (void*)buf.data(), buf.size() };
+	msghdr.msg_iov = &iov;
+	msghdr.msg_iovlen = 1;
+	
+	auto r = sendmsg(socket, &msghdr, MSG_NOSIGNAL);
+	if (r >- 0)
+		return;
+	if (errno != EMSGSIZE && errno != ENOBUFS) {
+		perror("sog::JournaldSink#log() sendmsg(data)");
+		return;
+	}
+	
+	boost::iostreams::stream<boost::iostreams::file_descriptor> memfd(
+		open("/dev/shm", O_CLOEXEC|O_TMPFILE|O_RDWR|O_EXCL), boost::iostreams::close_handle);
+	memfd << buf;
 	
 	union {
 		struct cmsghdr cm;
@@ -125,6 +142,8 @@ void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	cmptr->cmsg_type = SCM_RIGHTS;
 	*((int *) CMSG_DATA(cmptr)) = memfd->handle();
 	
+	msghdr.msg_iovlen = 0;
+	
 	if (sendmsg(socket, &msghdr, MSG_NOSIGNAL) < 0)
-		perror("sog::JournaldSink#log() sendmsg");
+		perror("sog::JournaldSink#log() sendmsg(fd)");
 }
