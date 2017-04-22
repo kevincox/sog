@@ -33,6 +33,12 @@ namespace sog {
 			auto t = source->msg_template;
 			size_t i = 0;
 			
+#if defined(__GNUC__) && !defined(__clang__)
+			// gcc hangs when running this function.
+			return true;
+#warning Not checking message formats to prevent hanging GCC.
+#endif
+			
 			while (i < t.size()) {
 				if (i >= t.size() || t[i] != '$') {
 					i++;

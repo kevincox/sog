@@ -7,6 +7,7 @@
 #include "sog/memory_logger.h"
 
 #define EXPECT_LOG(msg, ...) \
+	ASSERT_FALSE(logger.memory_logger.messages.empty()); \
 	EXPECT_EQ(logger.take_pairs(), Pairs({ \
 	{"FILE", __FILE__}, \
 	{"LINE", _sog_LINE}, \
