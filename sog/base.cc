@@ -3,9 +3,9 @@
 
 using string_view = std::experimental::string_view;
 
-namespace {
+sog::Sink *sog::_sink = nullptr;
 
-sog::Sink *sink = nullptr;
+namespace {
 
 sog::Value::Data data_ref(const sog::Value &v) {
 	auto *str = boost::get<std::string>(&v.data);
@@ -24,18 +24,14 @@ bool sog::Value::operator==(const Value &that) const {
 }
 
 void sog::init(sog::Sink *newsink) {
-	assert(sink == nullptr);
+	assert(_sink == nullptr);
 	
 	if (newsink)
-		sink = newsink;
+		_sink = newsink;
 	else
-		sink = new sog::PrettySink(&std::clog);
+		_sink = new sog::PrettySink(&std::clog);
 }
 
 std::unique_ptr<sog::SinkData> sog::_prepare(const Source *s) {
-	return sink->prepare(s);
-}
-
-void sog::_submit(sog::SinkData *sd, Message m) {
-	sink->log(sd, m);
+	return _sink->prepare(s);
 }
