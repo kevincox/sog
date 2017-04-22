@@ -1,17 +1,11 @@
-#define SD_JOURNAL_SUPPRESS_LOCATION
-
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/iostreams/device/file_descriptor.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <fcntl.h>
-#include <iostream>
 #include <sys/socket.h>
-#include <sys/uio.h>
 #include <sys/un.h>
-#include <systemd/sd-journal.h>
-// #include <unistd.h>
 
 #include "journald.h"
+
 #include "format.h"
 
 namespace {
