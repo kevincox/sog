@@ -119,7 +119,8 @@ void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	}
 	
 	boost::iostreams::stream<boost::iostreams::file_descriptor> memfd(
-		open("/dev/shm", O_CLOEXEC|O_TMPFILE|O_RDWR|O_EXCL), boost::iostreams::close_handle);
+		open("/dev/shm", O_CLOEXEC|O_TMPFILE|O_RDWR|O_EXCL, 0700),
+		boost::iostreams::close_handle);
 	memfd << buf;
 	
 	union {
