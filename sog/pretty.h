@@ -1,5 +1,5 @@
-#ifndef SOG___PRETTY_H
-#define SOG___PRETTY_H
+#ifndef SOG_PRETTY_H
+#define SOG_PRETTY_H
 
 #include "sink.h"
 

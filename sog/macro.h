@@ -1,5 +1,5 @@
-#ifndef SOG___MACRO_H
-#define SOG___MACRO_H
+#ifndef SOG_MACRO_H
+#define SOG_MACRO_H
 
 #define BOOST_PP_VARIADICS 1
 
@@ -36,7 +36,7 @@ namespace sog {
 #if defined(__GNUC__) && !defined(__clang__)
 			// gcc hangs when running this function.
 			return true;
-#warning Not checking message formats to prevent hanging GCC.
+#pragma message "Not checking message formats to prevent hanging GCC."
 #endif
 			
 			while (i < t.size()) {

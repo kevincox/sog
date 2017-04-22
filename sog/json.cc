@@ -88,7 +88,7 @@ std::unique_ptr<sog::SinkData> sog::JsonSink::prepare(const sog::Source *source)
 }
 
 void sog::JsonSink::log(sog::SinkData *sd, sog::Message msg) {
-	Data *data = (Data*)sd;
+	Data *data = static_cast<Data*>(sd);
 	
 	timeval time;
 	gettimeofday(&time, nullptr);

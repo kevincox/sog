@@ -1,5 +1,5 @@
-#ifndef SOG___JOURNALD_H
-#define SOG___JOURNALD_H
+#ifndef SOG_JOURNALD_H
+#define SOG_JOURNALD_H
 
 #include "sink.h"
 

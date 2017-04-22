@@ -39,4 +39,5 @@ cc_library(
 	deps = [
 		":sog",
 	],
+	copts = ["-Wno-weak-vtables"],
 ) for src in glob(["example/*.cc"])]

@@ -16,6 +16,8 @@ sog::Value::Data data_ref(const sog::Value &v) {
 
 }
 
+sog::SinkData::~SinkData() {}
+
 bool sog::Value::operator==(const Value &that) const {
 	auto l = data_ref(*this);
 	auto r = data_ref(that);

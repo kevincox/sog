@@ -1,1 +1,3 @@
 build --cxxopt=--std=c++1z
+build --copt=-Wall --copt=-Werror
+build --copt=-Wold-style-cast

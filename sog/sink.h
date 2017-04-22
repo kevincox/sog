@@ -1,5 +1,5 @@
-#ifndef SOG___SINK_H
-#define SOG___SINK_H
+#ifndef SOG_SINK_H
+#define SOG_SINK_H
 
 #include "base.h"
 

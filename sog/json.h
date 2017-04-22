@@ -1,5 +1,5 @@
-#ifndef SOG___JSON_H
-#define SOG___JSON_H
+#ifndef SOG_JSON_H
+#define SOG_JSON_H
 
 #include "sink.h"
 

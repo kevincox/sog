@@ -1,5 +1,5 @@
-#ifndef SOG___INIT_H
-#define SOG___INIT_H
+#ifndef SOG_INIT_H
+#define SOG_INIT_H
 
 #include "sink.h"
 
@@ -10,7 +10,7 @@ namespace sog {
 	 * 
 	 * It is an error to call this method twice.
 	 * 
-	 * @param The sink to send logs to. If null a sog::PrettySink to stderr
+	 * @param sink The sink to send logs to. If null a sog::PrettySink to stderr
 	 *	will be used.
 	 */
 	void init(Sink *sink=nullptr);

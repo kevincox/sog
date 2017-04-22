@@ -1,5 +1,5 @@
-#ifndef SOG___DYNAMIC_H
-#define SOG___DYNAMIC_H
+#ifndef SOG_DYNAMIC_H
+#define SOG_DYNAMIC_H
 
 #include "base.h"
 

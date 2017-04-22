@@ -55,7 +55,7 @@ void sog::PrettySink::log(sog::SinkData *sd, sog::Message msg) {
 	if (!sd)
 		return;
 	
-	Data *data = (Data*)sd;
+	Data *data = dynamic_cast<Data*>(sd);
 	
 	timeval time;
 	gettimeofday(&time, nullptr);

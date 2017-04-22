@@ -19,7 +19,7 @@ struct ToStringVisitor {
 
 void write_u64le(std::string *out, uint64_t i) {
 	for (size_t bit = 0; bit < 64; bit += 8)
-		*out += (char)(i >> bit);
+		*out += static_cast<char>(i >> bit);
 }
 
 void write_record(
@@ -73,8 +73,8 @@ sog::JournaldSink::JournaldSink() {
 	
 	sockaddr_un addr{AF_UNIX, "/run/systemd/journal/socket"};
 	addr.sun_family = AF_UNIX;
-	strcpy((char*)&addr.sun_path, "/run/systemd/journal/socket");
-	auto r = connect(socket, (sockaddr*)&addr, sizeof(addr));
+	strcpy(addr.sun_path, "/run/systemd/journal/socket");
+	auto r = connect(socket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
 	if (r < 0) {
 		perror("sog::JournaldSink connect(...)");
 		abort();
@@ -86,7 +86,7 @@ std::unique_ptr<sog::SinkData> sog::JournaldSink::prepare(const sog::Source *sou
 }
 
 void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
-	Data *data = (Data*)sd;
+	Data *data = static_cast<Data*>(sd);
 	
 	thread_local static std::string buf;
 	buf.clear(); // Thread local to prevent allocations.
@@ -104,9 +104,10 @@ void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 			data->chunks[i],
 			boost::apply_visitor(ToStringVisitor(), msg.values[i].data));
 	
-	msghdr msghdr{0};
+	msghdr msghdr;
+	memset(&msghdr, 0, sizeof(msghdr));
 	
-	iovec iov { (void*)buf.data(), buf.size() };
+	iovec iov { const_cast<char*>(buf.data()), buf.size() };
 	msghdr.msg_iov = &iov;
 	msghdr.msg_iovlen = 1;
 	

@@ -1,5 +1,5 @@
-#ifndef SOG___MEMORY_LOGGER_H
-#define SOG___MEMORY_LOGGER_H
+#ifndef SOG_MEMORY_LOGGER_H
+#define SOG_MEMORY_LOGGER_H
 
 #include "sink.h"
 

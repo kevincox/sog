@@ -1,5 +1,5 @@
-#ifndef SOG___FORMAT_H
-#define SOG___FORMAT_H
+#ifndef SOG_FORMAT_H
+#define SOG_FORMAT_H
 
 #include <experimental/string_view>
 #include <initializer_list>

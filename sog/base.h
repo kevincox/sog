@@ -1,5 +1,5 @@
-#ifndef SOG___BASE_H
-#define SOG___BASE_H
+#ifndef SOG_BASE_H
+#define SOG_BASE_H
 
 #include <assert.h>
 #include <boost/variant.hpp>
@@ -36,7 +36,7 @@ namespace sog {
 		Value(Value &&source) = default;
 		
 		// Explicit reference.
-		Value ref() const { return *this; };
+		Value ref() const { return *this; }
 		
 		// Explicit copy.
 		Value owned() const {
@@ -44,7 +44,7 @@ namespace sog {
 			if (s)
 				return std::string{*s};
 			return *this;
-		};
+		}
 		
 		bool operator==(const Value &that) const;
 	};
@@ -70,7 +70,7 @@ namespace sog {
 	};
 	
 	struct SinkData {
-		virtual ~SinkData() {};
+		virtual ~SinkData();
 	};
 	
 	/** Sink interface.
@@ -80,7 +80,7 @@ namespace sog {
 	 * themselves.
 	 */
 	struct Sink {
-		virtual ~Sink() {};
+		virtual ~Sink() {}
 		
 		/** Prepare data for a source.
 		 * 
