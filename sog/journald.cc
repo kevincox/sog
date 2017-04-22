@@ -134,7 +134,8 @@ void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	cmptr->cmsg_len = CMSG_LEN(sizeof(int));
 	cmptr->cmsg_level = SOL_SOCKET;
 	cmptr->cmsg_type = SCM_RIGHTS;
-	*((int *) CMSG_DATA(cmptr)) = memfd->handle();
+	int fd = memfd->handle();
+	memcpy(CMSG_DATA(cmptr), &fd, sizeof(fd));
 	
 	msghdr.msg_iovlen = 0;
 	
