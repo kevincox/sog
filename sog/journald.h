@@ -12,7 +12,7 @@ namespace sog {
 		JournaldSink();
 		
 		std::unique_ptr<SinkData> prepare(const Source *source) override;
-		void log(SinkData *sd, Message msg) override;
+		Logged log(SinkData *sd, Message msg) override;
 	};
 }
 

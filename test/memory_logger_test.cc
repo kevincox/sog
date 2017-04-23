@@ -28,3 +28,8 @@ TEST(MemoryLogger, Basic) {
 	EXPECT_EQ(logger.take_pairs(), Pairs({{"a", "1"},   {"b", "2"},   {"c", "3"}}));
 	EXPECT_EQ(logger.take_pairs(), Pairs({ {"foo", "x"}, {"bar", "y"}, {"baz", "z"} }));
 }
+
+TEST(MemoryLogger, Fatal) {
+	auto l =  []{ LOG(FATAL, "A message"); };
+	EXPECT_DEATH(l(), "");
+}

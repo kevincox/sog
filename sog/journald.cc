@@ -85,7 +85,7 @@ std::unique_ptr<sog::SinkData> sog::JournaldSink::prepare(const sog::Source *sou
 	return std::make_unique<Data>(source);
 }
 
-void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
+sog::Logged sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	Data *data = static_cast<Data*>(sd);
 	
 	thread_local static std::string buf;
@@ -113,10 +113,10 @@ void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	
 	auto r = sendmsg(socket, &msghdr, MSG_NOSIGNAL);
 	if (r >- 0)
-		return;
+		return {};
 	if (errno != EMSGSIZE && errno != ENOBUFS) {
 		perror("sog::JournaldSink#log() sendmsg(data)");
-		return;
+		return {};
 	}
 	
 	boost::iostreams::stream<boost::iostreams::file_descriptor> memfd(
@@ -143,4 +143,6 @@ void sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {
 	
 	if (sendmsg(socket, &msghdr, MSG_NOSIGNAL) < 0)
 		perror("sog::JournaldSink#log() sendmsg(fd)");
+	
+	return {};
 }

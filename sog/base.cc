@@ -3,8 +3,6 @@
 
 using string_view = std::experimental::string_view;
 
-sog::Sink *sog::_sink = nullptr;
-
 namespace {
 
 sog::Value::Data data_ref(const sog::Value &v) {
@@ -13,6 +11,8 @@ sog::Value::Data data_ref(const sog::Value &v) {
 		return sog::Value::Data(std::experimental::string_view{*str});
 	return v.data;
 }
+
+sog::Sink *sink = nullptr;
 
 }
 
@@ -26,14 +26,20 @@ bool sog::Value::operator==(const Value &that) const {
 }
 
 void sog::init(sog::Sink *newsink) {
-	assert(_sink == nullptr);
+	assert(sink == nullptr);
 	
 	if (newsink)
-		_sink = newsink;
+		sink = newsink;
 	else
-		_sink = new sog::PrettySink(&std::clog);
+		sink = new sog::PrettySink(&std::clog);
 }
 
 std::unique_ptr<sog::SinkData> sog::_prepare(const Source *s) {
-	return _sink->prepare(s);
+	return sink->prepare(s);
+}
+
+void sog::_submit(SinkData *d, Message m) {
+	sink->log(d, m);
+	if (m.source->level == level::FATAL)
+		abort();
 }

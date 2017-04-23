@@ -8,7 +8,7 @@
 namespace sog {
 	struct MemoryLogger: Sink {
 		std::queue<OwnedMessage> messages;
-		void log(SinkData *, Message msg) override;
+		Logged log(SinkData *, Message msg) override;
 	};
 }
 

@@ -87,7 +87,7 @@ std::unique_ptr<sog::SinkData> sog::JsonSink::prepare(const sog::Source *source)
 	return std::make_unique<Data>(source);
 }
 
-void sog::JsonSink::log(sog::SinkData *sd, sog::Message msg) {
+sog::Logged sog::JsonSink::log(sog::SinkData *sd, sog::Message msg) {
 	Data *data = static_cast<Data*>(sd);
 	
 	timeval time;
@@ -115,4 +115,6 @@ void sog::JsonSink::log(sog::SinkData *sd, sog::Message msg) {
 	}
 	
 	*out << "}\n";
+	
+	return {};
 }

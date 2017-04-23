@@ -51,9 +51,9 @@ std::unique_ptr<sog::SinkData> sog::PrettySink::prepare(const sog::Source *sourc
 	return std::make_unique<Data>(source);
 }
 
-void sog::PrettySink::log(sog::SinkData *sd, sog::Message msg) {
+sog::Logged sog::PrettySink::log(sog::SinkData *sd, sog::Message msg) {
 	if (!sd)
-		return;
+		return {};
 	
 	Data *data = dynamic_cast<Data*>(sd);
 	
@@ -73,4 +73,6 @@ void sog::PrettySink::log(sog::SinkData *sd, sog::Message msg) {
 	*out << data->chunk;
 	data->formatter.format(msg, out);
 	*out << std::endl;
+	
+	return {};
 }

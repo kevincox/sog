@@ -61,3 +61,9 @@ TEST_F(Pretty, Empty) {
 	LOG(INFO, "", foo, "a foo", bar, 5);
 	LOG(9, "");
 }
+
+TEST_F(Pretty, Fatal) {
+	logger.sink.out = &std::clog;
+	auto l =  []{ LOG(FATAL, "A message"); };
+	EXPECT_DEATH(l(), "A message");
+}
