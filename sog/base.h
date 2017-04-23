@@ -80,7 +80,7 @@ namespace sog {
 	 * created.
 	 */
 	struct Source final {
-		Level level;
+		Level level = level::ERROR;
 		std::experimental::string_view file;
 		std::experimental::string_view function;
 		uint32_t line = 0;
