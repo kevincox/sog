@@ -81,8 +81,8 @@ sog::JournaldSink::JournaldSink() {
 	}
 }
 
-std::unique_ptr<sog::SinkData> sog::JournaldSink::prepare(const sog::Source *source) {
-	return std::make_unique<Data>(source);
+sog::Prepared sog::JournaldSink::prepare(const sog::Source *source) {
+	return { std::make_unique<Data>(source) };
 }
 
 sog::Logged sog::JournaldSink::log(sog::SinkData *sd, sog::Message msg) {

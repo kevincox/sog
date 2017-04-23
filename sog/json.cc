@@ -83,8 +83,8 @@ struct Data: public sog::SinkData {
 
 }
 
-std::unique_ptr<sog::SinkData> sog::JsonSink::prepare(const sog::Source *source) {
-	return std::make_unique<Data>(source);
+sog::Prepared sog::JsonSink::prepare(const sog::Source *source) {
+	return { std::make_unique<Data>(source) };
 }
 
 sog::Logged sog::JsonSink::log(sog::SinkData *sd, sog::Message msg) {

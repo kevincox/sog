@@ -12,7 +12,7 @@ namespace sog {
 		std::ostream *out;
 		
 		PrettySink(std::ostream *out): out{out} {}
-		std::unique_ptr<SinkData> prepare(const Source *source) override;
+		Prepared prepare(const Source *source) override;
 		Logged log(SinkData *sd, Message msg) override;
 	};
 }

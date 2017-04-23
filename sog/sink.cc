@@ -34,6 +34,6 @@ char sog::level_char(sog::Level l) {
 	return LEVEL_CHARS[i];
 }
 
-std::unique_ptr<sog::SinkData> sog::Sink::prepare(const Source *source) {
-	return nullptr;
+sog::Prepared sog::Sink::prepare(const Source *source) {
+	return { nullptr };
 }

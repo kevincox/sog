@@ -5,6 +5,7 @@ void sog::DynamicLog::submit() {
 	message.values = values.data();
 	source.value_count = values.size();
 	
-	std::unique_ptr<sog::SinkData> sd { sog::_prepare(&source) };
-	sog::_submit(sd.get(), std::move(message));
+	auto prepare = sog::_prepare(&source);
+	if (prepare.log)
+		sog::_submit(prepare.sink_data.get(), std::move(message));
 }

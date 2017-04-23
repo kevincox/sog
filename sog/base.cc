@@ -34,12 +34,12 @@ void sog::init(sog::Sink *newsink) {
 		sink = new sog::PrettySink(&std::clog);
 }
 
-std::unique_ptr<sog::SinkData> sog::_prepare(const Source *s) {
+sog::Prepared sog::_prepare(const Source *s) {
 	return sink->prepare(s);
 }
 
 void sog::_submit(SinkData *d, Message m) {
 	sink->log(d, m);
 	if (m.source->level == level::FATAL)
-		abort();
+		std::terminate();
 }

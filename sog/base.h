@@ -53,7 +53,7 @@ namespace sog {
 	struct Source;
 	struct Message;
 	
-	using Level = uint8_t;
+	using Level = uint16_t;
 	namespace level {
 		constexpr Level FATAL = 0;
 		constexpr Level ERROR = 1;
@@ -71,6 +71,19 @@ namespace sog {
 	
 	struct SinkData {
 		virtual ~SinkData();
+	};
+	
+	struct Prepared final {
+		// Data to be passed to the sink.
+		std::unique_ptr<SinkData> sink_data;
+		
+		/** Should messages from this sink be logged.
+		 *
+		 * If false log() will never be called for this source.
+		 *
+		 * This can be used to cheaply drop messages that will never be logged.
+		 */
+		bool log = true;
 	};
 	
 	/** A log source.
@@ -142,7 +155,7 @@ namespace sog {
 			source(source), values(&*vals.begin()) {}
 	};
 	
-	std::unique_ptr<SinkData> _prepare(const Source *s);
+	Prepared _prepare(const Source *s);
 	void _submit(SinkData *d, Message m);
 }
 

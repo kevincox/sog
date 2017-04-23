@@ -11,7 +11,7 @@ namespace sog {
 		~JournaldSink();
 		JournaldSink();
 		
-		std::unique_ptr<SinkData> prepare(const Source *source) override;
+		Prepared prepare(const Source *source) override;
 		Logged log(SinkData *sd, Message msg) override;
 	};
 }

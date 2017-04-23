@@ -118,9 +118,10 @@ namespace sog {
 		}; \
 		static_assert(::sog::_is_valid(&_sog_source), \
 			"Invalid template string (check formatting and argument names.)"); \
-		static std::unique_ptr<::sog::SinkData> _sog_sink_data = \
-			::sog::_prepare(&_sog_source); \
-		::sog::_submit(_sog_sink_data.get(), ::sog::Message(&_sog_source, { vals })); \
+		static sog::Prepared _sog_prepared = ::sog::_prepare(&_sog_source); \
+		if (!_sog_prepared.log) \
+			break; \
+		::sog::_submit(_sog_prepared.sink_data.get(), ::sog::Message(&_sog_source, { vals })); \
 	} while(false)
 
 #define _sog_KEYS(r, _, i, e, ...) \
