@@ -65,5 +65,5 @@ TEST_F(Pretty, Empty) {
 TEST_F(Pretty, Fatal) {
 	logger.sink.out = &std::clog;
 	auto l =  []{ LOG(FATAL, "A message"); };
-	EXPECT_DEATH(l(), "A message");
+	EXPECT_DEATH(l(), "2000-02-13T15:30:00 F pretty_test.cc:1337 A message");
 }
