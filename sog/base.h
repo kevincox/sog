@@ -68,6 +68,16 @@ namespace sog {
 		constexpr Level DFATAL = ERROR;
 #endif
 	};
+	/// Value used to enable all log messages.
+	constexpr Level ENABLE_ALL = std::numeric_limits<Level>::max();
+	
+	/** A value reserved for errors.
+	 *
+	 * Note that it isn't necessarily an error to log at this level, however
+	 * filtering will be different as APIs that parse or otherwise return a
+	 * level may choose to use this as a sentinel value to indicate an error.
+	 */
+	constexpr Level LEVEL_ERROR = ENABLE_ALL - 1;
 	
 	struct SinkData {
 		virtual ~SinkData();
@@ -87,7 +97,7 @@ namespace sog {
 	};
 	
 	/** A log source.
-	 * 
+	 *
 	 * A source is a collection of metadata about a "type" of log message. This
 	 * is generally created by the LOG() macro. Sources should be immutable once
 	 * created.
@@ -104,7 +114,7 @@ namespace sog {
 		size_t value_count;
 		
 		/** The keys for this source.
-		 * 
+		 *
 		 * This points to the first element of an array of length value_count.
 		 */
 		const std::experimental::string_view *keys;
@@ -137,7 +147,7 @@ namespace sog {
 		const Source *source;
 		
 		/** Values of this message.
-		 * 
+		 *
 		 * This points to the first value of an array of length
 		 * source->value_count. The values map to the respective key in
 		 * source->keys.

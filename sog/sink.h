@@ -21,6 +21,13 @@ namespace sog {
 	struct Sink {
 		virtual ~Sink() {}
 		
+		/** Returned the default log level for this sink.
+		 * 
+		 * This is used in sog::init() to setup a filter of sources that won't
+		 * be passed to Sink::prepare().
+		 */
+		virtual Level default_log_level();
+		
 		/** Prepare data for a source.
 		 *
 		 * This method will be called once for every source. The value returned
@@ -67,6 +74,10 @@ namespace sog {
 	 * level (see sog::level_name()).
 	 */
 	char level_char(sog::Level l);
+	
+	/** Parse level name into sog::Level
+	 */
+	Level level_value(std::experimental::string_view s);
 	
 	struct OwnedMessage {
 		const Source *source;

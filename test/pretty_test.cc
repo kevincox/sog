@@ -13,6 +13,7 @@ struct WithPrettyLogger {
 		buf{},
 		sink{&buf}
 	{
+		setenv("SOG_LEVEL", "99", 1);
 		sog::init(&sink);
 	}
 	
@@ -60,6 +61,14 @@ TEST_F(Pretty, Formatting) {
 TEST_F(Pretty, Empty) {
 	LOG(INFO, "", foo, "a foo", bar, 5);
 	LOG(9, "");
+}
+
+TEST_F(Pretty, Suppressed) {
+	LOG(99, "A message");
+	EXPECT_EQ(logger.next_line(), "2000-02-13T15:30:00 T pretty_test.cc:1337 A message");
+	
+	LOG(100, "A message");
+	// Suppressed
 }
 
 TEST_F(Pretty, Fatal) {
