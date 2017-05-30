@@ -17,6 +17,10 @@ TEST_F(Sog, FormatTypes) {
 }
 
 TEST_F(Sog, FormatCheck) {
+#if defined(__GNUC__) && !defined(__clang__)
+	return;
+#endif
+	
 	std::vector<std::experimental::string_view> keys {"a", "foo", "a_str-key"};
 	sog::Source s { sog::level::INFO, __FILE__, "func", __LINE__, "", 3, keys.data()};
 	EXPECT_TRUE((s.msg_template = "A msg", sog::_is_valid(&s)));
