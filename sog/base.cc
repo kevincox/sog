@@ -33,8 +33,6 @@ bool sog::Value::operator==(const Value &that) const {
 }
 
 void sog::init(sog::Sink *newsink) {
-	assert(newsink != nullptr);
-	
 	if (!newsink)
 		newsink = new sog::PrettySink(&std::clog);
 	

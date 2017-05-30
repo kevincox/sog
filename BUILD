@@ -2,7 +2,7 @@ cc_library(
 	name = "sog",
 	srcs = glob(["sog/*.cc"]),
 	hdrs = glob(["sog/*.h"]),
-	linkopts = ["-lboost_iostreams", "-lsystemd"],
+	linkopts = ["-lboost_iostreams"],
 	visibility = [ "//visibility:public" ],
 )
 
