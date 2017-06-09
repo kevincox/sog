@@ -67,7 +67,7 @@ sog::Logged sog::PrettySink::log(sog::SinkData *sd, sog::Message msg) {
 	size_t len = strftime(buf, 80, "%FT%T ", &tm);
 	
 	std::lock_guard<std::mutex> lock{out_lock};
-	*out << std::experimental::string_view(buf, len);
+	*out << std::string_view(buf, len);
 	*out << data->chunk;
 	data->formatter.format(msg, out);
 	*out << std::endl;

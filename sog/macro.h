@@ -20,7 +20,7 @@
 namespace sog {
 	namespace {
 		constexpr
-		bool _eq(std::experimental::string_view a, std::experimental::string_view b) {
+		bool _eq(std::string_view a, std::string_view b) {
 			if (a.size() != b.size())
 				return false;
 			for (size_t i = 0; i < a.size(); ++i)
@@ -103,7 +103,7 @@ namespace sog {
 #define _sog_LOG(lvl, msg, n, keys, vals) \
 	do { \
 		using namespace ::sog::level; \
-		static constexpr std::experimental::string_view _sog_keys[] { keys }; \
+		static constexpr std::string_view _sog_keys[] { keys }; \
 		static_assert( \
 			n == 0 || sizeof(_sog_keys)/sizeof(_sog_keys[0]) == n, \
 			"Odd number of arguments to LOG."); \
@@ -126,7 +126,7 @@ namespace sog {
 
 #define _sog_KEYS(r, _, i, e, ...) \
 	BOOST_PP_IIF(BOOST_PP_MOD(i, 2), /* nothing */, \
-		std::experimental::string_view( \
+		std::string_view( \
 			BOOST_PP_STRINGIZE(e), sizeof(BOOST_PP_STRINGIZE(e))-1)) \
 	BOOST_PP_COMMA_IF(BOOST_PP_MOD(i, 2))
 

@@ -5,7 +5,7 @@
 
 namespace sog {
 	struct DynamicLog {
-		std::vector<std::experimental::string_view> keys;
+		std::vector<std::string_view> keys;
 		Source source;
 		
 		std::vector<Value> values;

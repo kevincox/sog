@@ -1,6 +1,6 @@
 #include "sink.h"
 
-constexpr std::experimental::string_view LEVEL_NAMES[] = {
+constexpr std::string_view LEVEL_NAMES[] = {
 	{ "FTL", 3 },
 	{ "ERR", 3 },
 	{ "WRN", 3 },
@@ -10,7 +10,7 @@ constexpr std::experimental::string_view LEVEL_NAMES[] = {
 };
 constexpr size_t LEVEL_NAMES_LEN = sizeof(LEVEL_NAMES) / sizeof(*LEVEL_NAMES);
 
-std::experimental::string_view sog::level_name(sog::Level l) {
+std::string_view sog::level_name(sog::Level l) {
 	size_t i = l;
 	if (i >= LEVEL_NAMES_LEN)
 		i = LEVEL_NAMES_LEN - 1;
@@ -34,7 +34,7 @@ char sog::level_char(sog::Level l) {
 	return LEVEL_CHARS[i];
 }
 
-sog::Level sog::level_value(std::experimental::string_view s) {
+sog::Level sog::level_value(std::string_view s) {
 	if (s == "FATAL") return level::FATAL;
 	if (s == "fatal") return level::FATAL;
 	if (s == "ERROR") return level::ERROR;

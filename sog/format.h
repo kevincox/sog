@@ -11,11 +11,11 @@ namespace sog {
 	class Formatter {
 		enum Type { STREAM, NONE };
 		struct Chunk {
-			std::experimental::string_view literal;
+			std::string_view literal;
 			Type type;
 			size_t value;
 			
-			Chunk(std::experimental::string_view l, Type t, size_t v):
+			Chunk(std::string_view l, Type t, size_t v):
 				literal{l}, type{t}, value{v} {}
 		};
 		std::vector<Chunk> chunks;

@@ -19,7 +19,7 @@ namespace {
 
 struct SogSource {
 	sog::Source source;
-	std::vector<std::experimental::string_view> keys;
+	std::vector<std::string_view> keys;
 	sog::Prepared prepared;
 };
 

@@ -7,7 +7,7 @@ namespace {
 
 constexpr char HEX_DIGITS[17] = "0123456789abcdef";
 
-void escape(std::string *out, std::experimental::string_view s) {
+void escape(std::string *out, std::string_view s) {
 	for (auto i = s.begin(); i != s.end(); ++i) {
 		auto c = *i;
 		if (c == '"')
@@ -33,9 +33,9 @@ struct ToJsonVisitor {
 	void operator()(const long &s) const { *out << s; }
 	void operator()(const double &s) const { *out << s; }
 	void operator()(const std::string &s) const {
-		return this->operator()(std::experimental::string_view(s));
+		return this->operator()(std::string_view(s));
 	}
-	void operator()(const std::experimental::string_view &s) const {
+	void operator()(const std::string_view &s) const {
 		*out << '"';
 		std::string buf;
 		escape(&buf, s);

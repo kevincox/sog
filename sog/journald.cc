@@ -14,7 +14,7 @@ struct ToStringVisitor {
 	std::string operator()(const long &s) const { return std::to_string(s); }
 	std::string operator()(const double &s) const { return std::to_string(s); }
 	std::string operator()(const std::string &s) const { return std::move(s); }
-	std::string operator()(const std::experimental::string_view &s) const { return std::string(s); }
+	std::string operator()(const std::string_view &s) const { return std::string(s); }
 };
 
 void write_u64le(std::string *out, uint64_t i) {
@@ -23,7 +23,7 @@ void write_u64le(std::string *out, uint64_t i) {
 }
 
 void write_record(
-	std::string *out, std::experimental::string_view k, std::experimental::string_view v)
+	std::string *out, std::string_view k, std::string_view v)
 {
 	out->append(k.data(), k.size());
 	*out += '\n';

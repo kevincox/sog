@@ -66,7 +66,7 @@ namespace sog {
 	 * that some log levels return the same string (in particular high log
 	 * levels return TRACE irrespective of their specific value).
 	 */
-	std::experimental::string_view level_name(sog::Level level);
+	std::string_view level_name(sog::Level level);
 	
 	/** Get a character representing a log level.
 	 *
@@ -77,7 +77,7 @@ namespace sog {
 	
 	/** Parse level name into sog::Level
 	 */
-	Level level_value(std::experimental::string_view s);
+	Level level_value(std::string_view s);
 	
 	struct OwnedMessage {
 		const Source *source;

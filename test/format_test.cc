@@ -21,7 +21,7 @@ TEST_F(Sog, FormatCheck) {
 	return;
 #endif
 	
-	std::vector<std::experimental::string_view> keys {"a", "foo", "a_str-key"};
+	std::vector<std::string_view> keys {"a", "foo", "a_str-key"};
 	sog::Source s { sog::level::INFO, __FILE__, "func", __LINE__, "", 3, keys.data()};
 	EXPECT_TRUE((s.msg_template = "A msg", sog::_is_valid(&s)));
 	EXPECT_TRUE((s.msg_template = "My $foo is foo", sog::_is_valid(&s)));

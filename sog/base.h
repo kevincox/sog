@@ -3,7 +3,7 @@
 
 #include <assert.h>
 #include <boost/variant.hpp>
-#include <experimental/string_view>
+#include <string_view>
 #include <initializer_list>
 #include <memory>
 #include <stdint.h>
@@ -16,18 +16,18 @@ namespace sog {
 			long,
 			double,
 			std::string,
-			std::experimental::string_view>;
+			std::string_view>;
 		Data data;
 		
 		inline Value(double f): data(f) {}
 		inline Value(std::string &&s): data(s) {}
-		inline Value(std::experimental::string_view s): data(s) {}
+		inline Value(std::string_view s): data(s) {}
 		
 		template <class T, typename=std::enable_if_t<std::is_integral<T>::value>>
 		inline Value(T i): data(static_cast<long>(i)) {}
 		
 		template <class... A>
-		inline Value(A&... a): data(std::experimental::string_view{std::forward<A>(a)...}) {}
+		inline Value(A&... a): data(std::string_view{std::forward<A>(a)...}) {}
 		
 		// Prevent accidental copies.
 		Value(const Value &v): data(v.data) {
@@ -104,10 +104,10 @@ namespace sog {
 	 */
 	struct Source final {
 		Level level = level::ERROR;
-		std::experimental::string_view file;
-		std::experimental::string_view function;
+		std::string_view file;
+		std::string_view function;
 		uint32_t line = 0;
-		std::experimental::string_view msg_template;
+		std::string_view msg_template;
 		
 		/** Number of values for this source.
 		 */
@@ -117,18 +117,18 @@ namespace sog {
 		 *
 		 * This points to the first element of an array of length value_count.
 		 */
-		const std::experimental::string_view *keys;
+		const std::string_view *keys;
 		
 		Source() {}
 		
 		inline constexpr Source(
 			Level level,
-			std::experimental::string_view file,
-			std::experimental::string_view function,
+			std::string_view file,
+			std::string_view function,
 			uint32_t line,
-			std::experimental::string_view msg_template,
+			std::string_view msg_template,
 			size_t value_count,
-			const std::experimental::string_view *keys
+			const std::string_view *keys
 		):
 			level(level),
 			file(file),

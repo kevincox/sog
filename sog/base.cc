@@ -1,14 +1,14 @@
 #include "init.h"
 #include "pretty.h"
 
-using string_view = std::experimental::string_view;
+using string_view = std::string_view;
 
 namespace {
 
 sog::Value::Data data_ref(const sog::Value &v) {
 	auto *str = boost::get<std::string>(&v.data);
 	if (str)
-		return sog::Value::Data(std::experimental::string_view{*str});
+		return sog::Value::Data(std::string_view{*str});
 	return v.data;
 }
 
@@ -36,7 +36,7 @@ void sog::init(sog::Sink *newsink) {
 	if (!newsink)
 		newsink = new sog::PrettySink(&std::clog);
 	
-	std::experimental::string_view env_level{std::getenv("SOG_LEVEL")};
+	std::string_view env_level{std::getenv("SOG_LEVEL")};
 	min_log_level = newsink->default_log_level();
 	while (!env_level.empty()) {
 		auto comma = env_level.find(',');
