@@ -35,6 +35,7 @@ namespace sog {
 			
 #if defined(__GNUC__) && !defined(__clang__)
 			// gcc hangs when running this function.
+			// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81042
 			return true;
 #pragma message "Not checking message formats to prevent hanging GCC."
 #endif
